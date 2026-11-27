@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="page-head"><div>
+  <h1 class="page-title">Profile &amp; preferences</h1>
+  <p class="page-sub mb-0">Display name, theme and default annotation layer.</p>
+</div></div>
+<form class="card" method="post" style="max-width:560px">
+  {% csrf_token %}
+  <div class="card-body">
+    {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% for error in field.errors %}<p class="fg-3 mb-0">{{ error }}</p>{% endfor %}
+      </div>
+    {% endfor %}
+    <button class="btn-solid theme-primary" type="submit">Save</button>
+  </div>
+</form>
+{% endblock %}

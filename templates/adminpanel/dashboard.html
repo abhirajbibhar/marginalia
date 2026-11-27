@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load icons %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="page-head"><div>
+  <h1 class="page-title">Admin Dashboard</h1>
+  <p class="page-sub mb-0">Deployment health for this instance.</p>
+</div></div>
+
+<div class="kpi-row">
+  <article class="kpi"><p class="kpi-label mb-1">Books</p><p class="kpi-figure mb-1">{{ stats.books }}</p><p class="kpi-delta mb-0 fg-3">catalogue size</p></article>
+  <article class="kpi"><p class="kpi-label mb-1">Users</p><p class="kpi-figure mb-1">{{ stats.users }}</p><p class="kpi-delta mb-0 fg-3">members</p></article>
+  <article class="kpi"><p class="kpi-label mb-1">Annotations</p><p class="kpi-figure mb-1">{{ stats.annotations }}</p><p class="kpi-delta mb-0 fg-3">live ({{ stats.private_annotations }} private · {{ stats.room_annotations }} room)</p></article>
+  <article class="kpi"><p class="kpi-label mb-1">Rooms</p><p class="kpi-figure mb-1">{{ stats.rooms }}</p><p class="kpi-delta mb-0 fg-3">{{ stats.active_rooms }} active</p></article>
+</div>
+
+<section class="card">
+  <header class="card-head"><div><h2 class="card-title">Deployment</h2><p class="card-sub mb-0">Target and pinned versions</p></div></header>
+  <div class="card-body">
+    <ul class="list-unstyled mb-0">
+      <li><strong>Active target</strong> {{ caps.target }} (storage: {{ caps.storage }})</li>
+      <li><strong>EmbedPDF snippet</strong> v{{ embedpdf_version }} (pinned)</li>
+      <li><strong>Direct uploads</strong> {{ caps.direct_upload|yesno:"on,off" }}</li>
+      <li><strong>DB transactions</strong> {{ caps.transactions|yesno:"yes,no (D1: idempotent writes)" }}</li>
+      <li><strong>Realtime push</strong> {{ caps.realtime_push|yesno:"on,off — polling baseline" }}</li>
+      <li><strong>Change feed rows</strong> {{ stats.changes }}</li>
+    </ul>
+  </div>
+</section>
+{% endblock %}

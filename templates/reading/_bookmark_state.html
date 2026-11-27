@@ -1,0 +1,10 @@
+{% load icons %}
+{# HTMX partial: bookmark toggled state. #}
+<button class="btn-icon" id="bookmarkBtn" type="button"
+        hx-post="{% url 'reading:bookmark' book.pk %}"
+        hx-vals='{"page": {{ page }}}'
+        hx-swap="outerHTML"
+        title="{% if created %}Remove bookmark{% else %}Bookmark this page{% endif %}"
+        aria-label="Bookmark toggle">
+  {% if created %}{% icon_fill "bookmark" 18 %}{% else %}{% icon "bookmark" 18 %}{% endif %}
+</button>

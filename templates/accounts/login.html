@@ -1,0 +1,43 @@
+{% load icons %}
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — Marginalia</title>
+<link rel="stylesheet" href="/static/vendor/bootstrap6/css/bootstrap.min.css">
+<script type="importmap">{"imports": {"bootstrap": "/static/vendor/bootstrap6/js/bootstrap.bundle.min.js"}}</script>
+<link rel="stylesheet" href="/static/css/base.css">
+<link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="side" id="side">
+    <a class="side-brand" href="/"><span class="side-mark" aria-hidden="true">M</span><span>Marginalia</span></a>
+  </aside>
+  <div class="main-col">
+    <main id="main" class="page">
+      <div class="page-head"><div>
+        <h1 class="page-title">Sign in</h1>
+        <p class="page-sub mb-0">Your PDF library, annotations and reading rooms.</p>
+      </div></div>
+      <form class="card" method="post" style="max-width:420px">
+        {% csrf_token %}
+        <div class="card-body">
+          {% if form.errors %}<p class="fg-3">Invalid username or password.</p>{% endif %}
+          <div class="mb-3">
+            <label class="form-label" for="id_username">Username</label>
+            <input class="form-control" type="text" name="username" id="id_username" autocomplete="username" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="id_password">Password</label>
+            <input class="form-control" type="password" name="password" id="id_password" autocomplete="current-password" required>
+          </div>
+          <button class="btn-solid theme-primary" type="submit">Sign in</button>
+        </div>
+      </form>
+    </main>
+  </div>
+</div>
+</body>
+</html>

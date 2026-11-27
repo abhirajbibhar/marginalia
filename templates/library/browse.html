@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load icons %}
+{% block title %}Library{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1 class="page-title">Library</h1>
+    <p class="page-sub mb-0">{{ page_obj.paginator.count }} books · PDF only</p>
+  </div>
+  <div class="page-actions">
+    {% if user.profile.is_librarian %}
+      <a class="btn-solid theme-primary" href="{% url 'library:upload' %}">{% icon "plus" 16 %} Upload book</a>
+    {% endif %}
+  </div>
+</div>
+
+<form class="card mb-3" method="get" action="{% url 'library:browse' %}">
+  <div class="card-body d-flex flex-wrap gap-2 align-items-end">
+    <div class="form-control form-adorn" style="min-width:220px">
+      <div class="form-adorn-icon">{% icon "search" 16 %}</div>
+      <input class="form-ghost" type="search" name="q" placeholder="Filter by title, author…" value="{{ filters.q|default:'' }}">
+    </div>
+    <select class="form-select" name="category" style="width:auto">
+      <option value="">All categories</option>
+      {% for c in categories %}<option value="{{ c.slug }}" {% if filters.category == c.slug %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+    </select>
+    <select class="form-select" name="series" style="width:auto">
+      <option value="">All series</option>
+      {% for s in series_list %}<option value="{{ s.slug }}" {% if filters.series == s.slug %}selected{% endif %}>{{ s.name }}</option>{% endfor %}
+    </select>
+    <select class="form-select" name="order" style="width:auto">
+      <option value="title" {% if filters.order == 'title' %}selected{% endif %}>Title</option>
+      <option value="author" {% if filters.order == 'author' %}selected{% endif %}>Author</option>
+      <option value="recent" {% if filters.order == 'recent' %}selected{% endif %}>Recently added</option>
+    </select>
+    <button class="btn-solid theme-primary" type="submit">{% icon "filter" 16 %} Filter</button>
+    <a class="btn-text theme-secondary" href="?view={% if view == 'grid' %}list{% else %}grid{% endif %}">
+      {% if view == 'grid' %}List view{% else %}Grid view{% endif %}
+    </a>
+  </div>
+</form>
+
+{% include "library/_book_grid.html" %}
+{% endblock %}

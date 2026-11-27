@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load icons humanize %}
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1 class="page-title">{{ book.title }}</h1>
+    <p class="page-sub mb-0">
+      {% for author in book.authors.all %}<a href="{% url 'authors:detail' author.pk %}">{{ author.name }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}
+      {% if book.series %} · <a href="{% url 'series:detail' book.series.pk %}">{{ book.series.name }}</a>{% endif %}
+    </p>
+  </div>
+  <div class="page-actions d-flex align-items-center gap-2">
+    <a class="btn-solid theme-primary" href="{% url 'reading:reader' book.pk %}">{% icon "book" 16 %} Read</a>
+    <div class="menu-wrap">
+      <button class="btn-outline theme-secondary" type="button" data-bs-toggle="menu" aria-expanded="false">
+        Actions {% icon "chevron-right" 14 %}
+      </button>
+      <div class="menu">
+        <form method="post" action="{% url 'rooms:create' book.pk %}">{% csrf_token %}
+          <input type="hidden" name="name" value="Reading: {{ book.title|truncatechars:30 }}">
+          <button class="menu-item" type="submit">Start shared reading</button>
+        </form>
+        {% if user_collections %}
+          <hr class="menu-divider">
+          <p class="menu-header mb-0">Add to collection</p>
+          {% for collection in user_collections %}
+            <form method="post" action="{% url 'collections:add_book' collection.pk %}">{% csrf_token %}
+              <input type="hidden" name="book_id" value="{{ book.pk }}">
+              <button class="menu-item" type="submit">{{ collection.name }}</button>
+            </form>
+          {% endfor %}
+        {% endif %}
+        {% if user.profile.is_librarian %}
+          <hr class="menu-divider">
+          <a class="menu-item" href="{% url 'library:edit' book.pk %}">Edit metadata</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+  <section class="card">
+    <header class="card-head"><div><h2 class="card-title">About</h2></div></header>
+    <div class="card-body">
+      {% if book.cover_path %}
+        <img src="{% url 'reading:cover' book.pk %}" alt="Cover of {{ book.title }}" style="float:right;max-width:180px" class="ms-3 mb-2">
+      {% endif %}
+      {% if book.description %}<p>{{ book.description|linebreaksbr }}</p>{% else %}<p class="fg-3">No description.</p>{% endif %}
+      <ul class="list-unstyled mb-0">
+        {% if book.isbn %}<li><strong>ISBN</strong> {{ book.isbn }}</li>{% endif %}
+        {% if book.publisher %}<li><strong>Publisher</strong> {{ book.publisher }}</li>{% endif %}
+        {% if book.publication_date %}<li><strong>Published</strong> {{ book.publication_date }}</li>{% endif %}
+        <li><strong>Pages</strong> {{ book.pages }}</li>
+        <li><strong>Language</strong> {{ book.language }}</li>
+        <li><strong>Format</strong> PDF · {{ book.file_size|filesizeformat }}</li>
+      </ul>
+      <p class="mt-2 mb-0">
+        {% for c in book.categories.all %}<span class="chip">{{ c.name }}</span> {% endfor %}
+        {% for t in book.tags.all %}<span class="chip">{{ t.name }}</span> {% endfor %}
+      </p>
+    </div>
+  </section>
+
+  <div>
+    <section class="card mb-3">
+      <header class="card-head">
+        <div><h2 class="card-title">Reading rooms</h2><p class="card-sub mb-0">Shared annotation layers</p></div>
+      </header>
+      <div class="card-body">
+        <ul class="act-list">
+          {% for room in rooms %}
+          <li class="act">
+            <span class="act-icon act-meeting" aria-hidden="true">{% icon "rooms" 14 %}</span>
+            <div>
+              <p class="act-head mb-1"><strong>{{ room.name }}</strong> <span class="fg-3">· owner {{ room.owner.profile.label }}</span></p>
+              <p class="act-when mb-0"><a href="{% url 'rooms:detail' room.pk %}">Open</a></p>
+            </div>
+          </li>
+          {% empty %}
+          <li class="act"><div><p class="act-text mb-0 fg-3">No rooms yet. Start shared reading to annotate together.</p></div></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <section class="card">
+      <header class="card-head">
+        <div><h2 class="card-title">Reviews</h2><p class="card-sub mb-0">{% if book.avg_rating %}{{ book.avg_rating|floatformat:1 }} ★ average{% else %}No ratings yet{% endif %}</p></div>
+      </header>
+      <div class="card-body">
+        {% if user_review %}
+          <p class="fg-3">Your review: {{ user_review.rating }} ★ — {{ user_review.review_text|truncatechars:200 }}</p>
+        {% endif %}
+        <form method="post" action="{% url 'reading:review' book.pk %}">{% csrf_token %}
+          <div class="d-flex gap-2 align-items-end">
+            <label class="mb-0">Rating
+              <select class="form-select" name="rating">
+                {% for i in "12345" %}<option value="{{ i }}">{{ i }} ★</option>{% endfor %}
+              </select>
+            </label>
+            <input class="form-control" name="review_text" placeholder="Optional review" maxlength="4000">
+            <button class="btn-outline theme-secondary" type="submit">Save</button>
+          </div>
+        </form>
+        <ul class="act-list mt-3">
+          {% for review in reviews %}
+          <li class="act">
+            <div>
+              <p class="act-head mb-1"><strong>{{ review.user.profile.label }}</strong> <span class="fg-3">· {{ review.rating }} ★ · {{ review.created_at|naturaltime }}</span></p>
+              <p class="act-text mb-0">{{ review.review_text|linebreaksbr }}</p>
+            </div>
+          </li>
+          {% empty %}
+          <li class="act"><div><p class="act-text mb-0 fg-3">Be the first to review.</p></div></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+  </div>
+</div>
+{% endblock %}

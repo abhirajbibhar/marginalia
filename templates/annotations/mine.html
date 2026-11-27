@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load icons %}
+{% block title %}My Annotations{% endblock %}
+{% block content %}
+<div class="page-head"><div>
+  <h1 class="page-title">My Annotations</h1>
+  <p class="page-sub mb-0">Private notes and room annotations. Click a row to jump into the reader.</p>
+</div></div>
+
+<form class="card mb-3" method="get" hx-get="{% url 'annotations:mine' %}" hx-target="#annotation-results" hx-swap="innerHTML" hx-trigger="change, submit">
+  <div class="card-body d-flex flex-wrap gap-2">
+    <select class="form-select" name="book" style="width:auto">
+      <option value="">All books</option>
+      {% for id, title in books %}<option value="{{ id }}" {% if filters.book == id|stringformat:"s" %}selected{% endif %}>{{ title|truncatechars:40 }}</option>{% endfor %}
+    </select>
+    <select class="form-select" name="type" style="width:auto">
+      <option value="">All types</option>
+      {% for value, label in subtypes %}<option value="{{ value }}" {% if filters.type == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <select class="form-select" name="layer" style="width:auto">
+      <option value="">Both layers</option>
+      <option value="private" {% if filters.layer == 'private' %}selected{% endif %}>Private</option>
+      <option value="room" {% if filters.layer == 'room' %}selected{% endif %}>Room</option>
+    </select>
+    <div class="form-control form-adorn flex-grow-1">
+      <div class="form-adorn-icon">{% icon "search" 16 %}</div>
+      <input class="form-ghost" type="search" name="text" value="{{ filters.text|default:'' }}" placeholder="Search text…">
+    </div>
+    <button class="btn-outline theme-secondary" type="submit">Filter</button>
+  </div>
+</form>
+
+<div id="annotation-results">
+  {% include "annotations/_list.html" %}
+</div>
+{% endblock %}

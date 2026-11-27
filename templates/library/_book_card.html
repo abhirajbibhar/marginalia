@@ -1,0 +1,52 @@
+{% load icons %}
+{# Bootstrap 6 card (docs/6.0/components/card) + Menu (docs/6.0/components/menu).
+   The title carries .stretched-link so the whole card is clickable; the action
+   menu sits above it (z-index) and keeps working. #}
+<div class="col">
+  <article class="card h-100 hover-lift book-card">
+    <a class="book-cover" href="{% url 'library:detail' book.pk %}" tabindex="-1" aria-hidden="true">
+      {% if book.cover_path %}
+        <img class="card-img-top book-cover-img" src="{% url 'reading:cover' book.pk %}" alt="" loading="lazy">
+      {% else %}
+        <div class="card-img-top book-cover-ph">
+          <span class="book-cover-ph-title">{{ book.title|truncatechars:60 }}</span>
+        </div>
+      {% endif %}
+    </a>
+    <div class="card-body">
+      <div class="d-flex align-items-start gap-2">
+        <h3 class="card-title h6 mb-1 flex-grow-1">
+          <a class="stretched-link text-decoration-none" href="{% url 'library:detail' book.pk %}">{{ book.title }}</a>
+        </h3>
+        <div class="menu-wrap book-card-menu">
+          <button class="btn-icon btn-sm" type="button" data-bs-toggle="menu" aria-expanded="false" aria-label="Book actions">
+            {% icon "menu" 16 %}
+          </button>
+          <div class="menu">
+            <a class="menu-item" href="{% url 'reading:reader' book.pk %}">Read</a>
+            <a class="menu-item" href="{% url 'library:detail' book.pk %}">Book details</a>
+            <form method="post" action="{% url 'rooms:create' book.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="name" value="Reading: {{ book.title|truncatechars:30 }}">
+              <button class="menu-item" type="submit">Start shared reading</button>
+            </form>
+            {% if user.profile.is_librarian %}
+              <hr class="menu-divider">
+              <a class="menu-item" href="{% url 'library:edit' book.pk %}">Edit metadata</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <p class="card-subtitle mb-2">
+        {% for author in book.authors.all|slice:":3" %}
+          {{ author.name }}{% if not forloop.last %}, {% endif %}
+        {% empty %}<span class="fg-3">Unknown author</span>{% endfor %}
+      </p>
+      <p class="mb-0 d-flex flex-wrap gap-1">
+        {% if book.avg_rating %}<span class="badge text-bg-warning">{{ book.avg_rating|floatformat:1 }} ★</span>{% endif %}
+        {% if book.series %}<span class="badge text-bg-secondary">{{ book.series.name }}</span>{% endif %}
+        <span class="badge text-bg-light">{{ book.pages }}p</span>
+      </p>
+    </div>
+  </article>
+</div>

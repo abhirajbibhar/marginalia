@@ -1,0 +1,58 @@
+/*!
+ * app.css — application-level component tweaks layered on the Cadence
+ * template (kept separate from base.css/style.css so `vendor_assets.sh`
+ * can re-copy the template files without clobbering app styles).
+ *
+ * Unlayered, longhand-only (template contract).
+ */
+
+/* Bootstrap 6 card grid for books: keep titles tidy and covers consistent. */
+.book-card {
+  overflow: hidden; /* keep the rounded cover inside the card */
+}
+
+.book-card .card-title {
+  line-height: 1.35;
+}
+
+.book-cover-img {
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  object-fit: cover;
+}
+
+.book-cover-ph {
+  aspect-ratio: 3 / 4;
+  display: flex;
+  align-items: flex-end;
+  padding: 0.75rem;
+  background: color-mix(in oklab, var(--brand, var(--bs-primary-base)), transparent 88%);
+}
+
+.book-cover-ph-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  color: var(--bs-body-color);
+}
+
+/* The stretched-link makes the card clickable; the action menu floats above. */
+.book-card-menu {
+  position: relative;
+  z-index: 3;
+  flex: 0 0 auto;
+}
+
+.book-card-menu .menu {
+  inset-inline-end: 0; /* keep the menu inside the card */
+}
+
+/* A row of card columns should bottom-align card bodies. */
+.book-card .card-body {
+  padding-block: 0.875rem;
+}
+
+/* Load-more row spacing. */
+.book-more {
+  padding-block: 0.75rem;
+}

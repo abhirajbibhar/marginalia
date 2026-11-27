@@ -1,0 +1,107 @@
+/*!
+ * reader.css — the reader inside the Cadence shell.
+ *
+ * Template contract: unlayered CSS, longhand properties only (Bootstrap 6
+ * wraps its CSS in cascade layers and unlayered author CSS wins; shorthand
+ * margin/padding would beat utilities on the same element).
+ *
+ * Layout: body.is-reader makes .main-col a 100svh flex column whose page never
+ * scrolls. The site topbar is the only header — it carries the reader controls
+ * (back, title, layer switch, presence, bookmark, sync chip) and the EmbedPDF
+ * viewer's own header sits directly beneath it.
+ */
+
+/* Desktop reader layout — the page itself never scrolls. */
+body.is-reader .main-col {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+body.is-reader .topbar {
+  flex: 0 0 auto;
+  gap: 0.625rem;
+}
+
+body.is-reader .page-reader {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding-block: 0;
+  padding-inline: 0;
+  overflow: hidden;
+}
+
+/* --- reader controls, inside the topbar --------------------------------- */
+
+.reader-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 28vw;
+}
+
+.reader-layers {
+  flex: 0 0 auto;
+}
+
+.reader-layers .layer-btn {
+  white-space: nowrap;
+}
+
+.reader-layers .layer-btn.is-active {
+  background: color-mix(in oklab, var(--brand, var(--bs-primary-base)), transparent 82%);
+  border-color: color-mix(in oklab, var(--brand, var(--bs-primary-base)), transparent 55%);
+}
+
+.reader-avatars {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.reader-avatars .avatar {
+  margin-inline-start: -0.35rem;
+  border: 2px solid var(--bs-bg-body, #fff);
+}
+
+.sync-chip {
+  flex: 0 0 auto;
+}
+
+.sync-chip[data-state="saved"] {
+  color: var(--cad-good, var(--bs-success));
+}
+
+.sync-chip[data-state="syncing"] {
+  color: var(--cad-warn, var(--bs-warning));
+}
+
+.sync-chip[data-state="offline"] {
+  color: var(--bs-danger);
+}
+
+/* The mount fills the rest of the column, directly under the viewer header. */
+.pdf-mount {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+}
+
+.pdf-mount > div {
+  height: 100%;
+}
+
+/* Tablet/mobile: keep the controls compact; presence hides early. */
+@media (width < 992px) {
+  .reader-title {
+    max-width: 18vw;
+  }
+
+  .reader-layers .layer-btn {
+    padding-inline: 0.45rem;
+  }
+}

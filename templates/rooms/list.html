@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load icons %}
+{% block title %}Rooms{% endblock %}
+{% block content %}
+<div class="page-head"><div>
+  <h1 class="page-title">Reading rooms</h1>
+  <p class="page-sub mb-0">Shared annotation layers — private notes stay private.</p>
+</div></div>
+
+<section class="card mb-3">
+  <header class="card-head"><div><h2 class="card-title">Your rooms</h2><p class="card-sub mb-0">Rooms you own</p></div></header>
+  <div class="card-body">
+    <ul class="act-list">
+      {% for room in owned %}
+      <li class="act">
+        <span class="act-icon act-meeting" aria-hidden="true">{% icon "rooms" 14 %}</span>
+        <div>
+          <p class="act-head mb-1"><strong>{{ room.name }}</strong> <span class="fg-3">· {{ room.book.title|truncatechars:40 }}</span></p>
+          <p class="act-when mb-0"><a href="{% url 'rooms:detail' room.pk %}">Manage</a></p>
+        </div>
+      </li>
+      {% empty %}
+      <li class="act"><div><p class="act-text mb-0 fg-3">You own no rooms. Use “Start shared reading” on a book page.</p></div></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="card">
+  <header class="card-head"><div><h2 class="card-title">Rooms you've joined</h2></div></header>
+  <div class="card-body">
+    <ul class="act-list">
+      {% for room in rooms %}
+      <li class="act">
+        <span class="act-icon act-note" aria-hidden="true">{% icon "highlight" 14 %}</span>
+        <div>
+          <p class="act-head mb-1"><strong>{{ room.name }}</strong> <span class="fg-3">· {{ room.book.title|truncatechars:40 }}</span></p>
+          <p class="act-when mb-0"><a href="{% url 'rooms:detail' room.pk %}">Open</a></p>
+        </div>
+      </li>
+      {% empty %}
+      <li class="act"><div><p class="act-text mb-0 fg-3">No rooms joined yet.</p></div></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

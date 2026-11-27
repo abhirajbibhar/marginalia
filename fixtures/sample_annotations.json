@@ -1,0 +1,98 @@
+[
+{
+ "model": "annotations.annotation",
+ "pk": 1,
+ "fields": {
+  "uid": "seed-root-1",
+  "book": 2,
+  "room": 1,
+  "author": 3,
+  "page_index": 0,
+  "subtype": "markup",
+  "parent_uid": "",
+  "text": "Chapter one opens strong.",
+  "payload": {
+   "type": 8,
+   "pageIndex": 0,
+   "id": "seed-root-1",
+   "contents": "Chapter one opens strong."
+  },
+  "revision": 1,
+  "created_at": "2026-11-25T08:12:20.557Z",
+  "updated_at": "2026-11-25T08:15:42.983Z",
+  "deleted_at": null
+ }
+},
+{
+ "model": "annotations.annotation",
+ "pk": 2,
+ "fields": {
+  "uid": "seed-reply-1",
+  "book": 2,
+  "room": 1,
+  "author": 4,
+  "page_index": 0,
+  "subtype": "text_note",
+  "parent_uid": "seed-root-1",
+  "text": "Agreed — the pacing works.",
+  "payload": {
+   "type": 1,
+   "pageIndex": 0,
+   "inReplyToId": "seed-root-1",
+   "replyType": "R",
+   "id": "seed-reply-1",
+   "contents": "Agreed — the pacing works."
+  },
+  "revision": 1,
+  "created_at": "2026-11-25T08:12:20.636Z",
+  "updated_at": "2026-11-25T08:15:43.073Z",
+  "deleted_at": null
+ }
+},
+{
+ "model": "annotations.annotation",
+ "pk": 3,
+ "fields": {
+  "uid": "seed-root-2",
+  "book": 2,
+  "room": 1,
+  "author": 5,
+  "page_index": 1,
+  "subtype": "ink",
+  "parent_uid": "",
+  "text": "Doodle in the margin.",
+  "payload": {
+   "type": 14,
+   "pageIndex": 1,
+   "id": "seed-root-2",
+   "contents": "Doodle in the margin."
+  },
+  "revision": 1,
+  "created_at": "2026-11-25T08:12:20.759Z",
+  "updated_at": "2026-11-25T08:15:43.157Z",
+  "deleted_at": null
+ }
+},
+{
+ "model": "annotations.annotation",
+ "pk": 4,
+ "fields": {
+  "uid": "seed-private-1",
+  "book": 3,
+  "room": null,
+  "author": 4,
+  "page_index": 0,
+  "subtype": "text_note",
+  "parent_uid": "",
+  "text": "Private margin note.",
+  "payload": {
+   "id": "seed-private-1",
+   "contents": "Private margin note."
+  },
+  "revision": 1,
+  "created_at": "2026-11-25T08:12:20.870Z",
+  "updated_at": "2026-11-25T08:15:43.221Z",
+  "deleted_at": null
+ }
+}
+]

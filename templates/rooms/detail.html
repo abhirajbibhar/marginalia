@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load icons humanize %}
+{% block title %}{{ room.name }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1 class="page-title">{{ room.name }}</h1>
+    <p class="page-sub mb-0">{{ room.book.title }} · owner {{ room.owner.profile.label }} · you are {{ role }}</p>
+  </div>
+  <div class="page-actions">
+    <a class="btn-solid theme-primary" href="{% url 'reading:reader' room.book.pk %}?room={{ room.pk }}">{% icon "book" 16 %} Open in reader</a>
+  </div>
+</div>
+
+<div class="grid-2">
+  <section class="card">
+    <header class="card-head"><div><h2 class="card-title">Members</h2><p class="card-sub mb-0">{{ members|length }} members</p></div></header>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table lg:table-stacked">
+          <thead><tr><th>Member</th><th>Role</th><th>Page</th><th></th></tr></thead>
+          <tbody>
+            {% for m in members %}
+            <tr>
+              <td>{{ m.user.profile.label }}</td>
+              <td><span class="chip">{{ m.get_role_display }}</span></td>
+              <td>{% if m.last_page %}p. {{ m.last_page }}{% else %}—{% endif %}</td>
+              <td>
+                {% if role == 'owner' and m.user_id != room.owner_id %}
+                <form method="post" action="{% url 'rooms:remove_member' room.pk m.user_id %}">{% csrf_token %}
+                  <button class="btn-text theme-secondary btn-sm" type="submit">Remove</button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if role == 'owner' %}
+      <form class="d-flex gap-2 mt-2" method="post" action="{% url 'rooms:add_member' room.pk %}">
+        {% csrf_token %}
+        <input class="form-control" name="username" placeholder="Username" required>
+        <select class="form-select" name="role" style="width:auto">
+          <option value="editor">Editor</option>
+          <option value="viewer">Viewer</option>
+        </select>
+        <button class="btn-outline theme-secondary" type="submit">Add member</button>
+      </form>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="card">
+    <header class="card-head"><div><h2 class="card-title">Invite link</h2><p class="card-sub mb-0">Revocable and expiring</p></div></header>
+    <div class="card-body">
+      {% if invite_url %}
+        <p class="mb-2"><code>{{ invite_url }}</code></p>
+        <p class="fg-3">Expires {{ room.token_expires_at|naturaltime|default:"never" }}.</p>
+        {% if role == 'owner' %}
+        <div class="d-flex gap-2">
+          <form method="post" action="{% url 'rooms:rotate' room.pk %}">{% csrf_token %}
+            <button class="btn-outline theme-secondary" type="submit">{% icon "refresh" 16 %} Rotate</button>
+          </form>
+          <form method="post" action="{% url 'rooms:revoke' room.pk %}">{% csrf_token %}
+            <button class="btn-text theme-secondary" type="submit">Revoke</button>
+          </form>
+        </div>
+        {% endif %}
+      {% else %}
+        <p class="fg-3 mb-2">No active invite link.</p>
+        {% if role == 'owner' %}
+        <form method="post" action="{% url 'rooms:rotate' room.pk %}">{% csrf_token %}
+          <button class="btn-outline theme-secondary" type="submit">Create invite link</button>
+        </form>
+        {% endif %}
+      {% endif %}
+    </div>
+  </section>
+</div>
+
+<section class="card mt-3">
+  <header class="card-head"><div><h2 class="card-title">Activity</h2><p class="card-sub mb-0">Recent room annotations</p></div></header>
+  <div class="card-body">
+    <ul class="act-list">
+      {% for change in activity %}
+      <li class="act">
+        <div>
+          <p class="act-head mb-1"><strong>{{ change.actor.profile.label|default:"Someone" }}</strong>
+            <span class="fg-3">· {{ change.get_op_display }} · p. {{ change.revision }}</span></p>
+          <p class="act-when mb-0">{{ change.created_at|naturaltime }}</p>
+        </div>
+      </li>
+      {% empty %}
+      <li class="act"><div><p class="act-text mb-0 fg-3">No activity yet.</p></div></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

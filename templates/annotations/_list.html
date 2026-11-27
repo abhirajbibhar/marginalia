@@ -1,0 +1,25 @@
+{% load icons humanize %}
+<div class="table-responsive">
+  <table class="table lg:table-stacked">
+    <thead><tr><th>Book</th><th>Page</th><th>Type</th><th>Layer</th><th>Comment</th><th>Updated</th></tr></thead>
+    <tbody>
+      {% for a in page_obj %}
+      <tr>
+        <td><a href="{% url 'reading:reader' a.book.pk %}?page={{ a.page_index|add:1 }}&focus={{ a.uid }}">{{ a.book.title|truncatechars:40 }}</a></td>
+        <td>{{ a.page_index|add:1 }}</td>
+        <td><span class="chip">{{ a.get_subtype_display }}</span></td>
+        <td>{% if a.room %}{{ a.room.name|truncatechars:24 }}{% else %}Private{% endif %}</td>
+        <td>{{ a.text|default:"—" |truncatechars:80 }}</td>
+        <td>{{ a.updated_at|naturaltime }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="fg-3">No annotations match.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% if page_obj.has_next %}
+<div class="text-center mt-3">
+  <a class="btn-outline theme-secondary" href="?page={{ page_obj.next_page_number }}&{{ filters.urlencode }}">Next page</a>
+</div>
+{% endif %}

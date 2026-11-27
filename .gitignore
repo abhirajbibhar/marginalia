@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Django
+db.sqlite3
+staticfiles/
+media/books/*
+media/covers/*
+!media/books/.gitkeep
+!media/covers/.gitkeep
+
+# Env & secrets (never commit)
+.env
+.wrangler/
+dist/
+
+# Node (tooling only; runtime assets are vendored into static/)
+node_modules/
+
+# Test & editor noise
+.pytest_cache/
+.coverage
+htmlcov/
+openclaw/

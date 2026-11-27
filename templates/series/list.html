@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load icons %}
+{% block title %}Series{% endblock %}
+{% block content %}
+<div class="page-head"><div>
+  <h1 class="page-title">Series</h1>
+  <p class="page-sub mb-0">{{ page_obj.paginator.count }} series</p>
+</div></div>
+<form class="card mb-3" method="get"><div class="card-body d-flex gap-2">
+  <div class="form-control form-adorn flex-grow-1">
+    <div class="form-adorn-icon">{% icon "search" 16 %}</div>
+    <input class="form-ghost" type="search" name="q" value="{{ q }}" placeholder="Filter series…">
+  </div>
+  <button class="btn-outline theme-secondary" type="submit">Filter</button>
+</div></form>
+<div class="table-responsive">
+  <table class="table lg:table-stacked">
+    <thead><tr><th>Series</th><th>Books</th></tr></thead>
+    <tbody>
+      {% for s in page_obj %}
+      <tr>
+        <td><a href="{% url 'series:detail' s.pk %}">{{ s.name }}</a></td>
+        <td>{{ s.n_books }}</td>
+      </tr>
+      {% empty %}<tr><td colspan="2" class="fg-3">No series.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

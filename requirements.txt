@@ -1,0 +1,6 @@
+# Runtime dependencies (both targets; pure Python or Pyodide wheels).
+# Installed by start.py into .venv — see pyproject.toml for the full spec.
+Django>=6.0,<6.1
+pypdf>=5.0
+argon2-cffi>=23.1
+sqlparse>=0.5

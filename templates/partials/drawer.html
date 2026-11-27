@@ -1,0 +1,19 @@
+{% load icons %}
+{# Mobile navigation drawer — Bootstrap 6 <dialog class="drawer"> (not offcanvas). #}
+<dialog class="drawer drawer-start" tabindex="-1" id="navDrawer" aria-labelledby="navDrawerLabel">
+  <div class="drawer-header">
+    <h5 class="drawer-title" id="navDrawerLabel">Marginalia</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="drawer" aria-label="Close"></button>
+  </div>
+  <div class="drawer-body">
+    <a class="drawer-link{% if nav == 'dashboard' %} is-active{% endif %}" href="{% url 'dashboard:home' %}">{% icon "dashboard" %}<span>Dashboard</span></a>
+    <a class="drawer-link{% if nav == 'library' %} is-active{% endif %}" href="{% url 'library:browse' %}">{% icon "book" %}<span>Library</span></a>
+    <a class="drawer-link{% if nav == 'authors' %} is-active{% endif %}" href="{% url 'authors:list' %}">{% icon "authors" %}<span>Authors</span></a>
+    <a class="drawer-link{% if nav == 'series' %} is-active{% endif %}" href="{% url 'series:list' %}">{% icon "series" %}<span>Series</span></a>
+    <a class="drawer-link{% if nav == 'collections' %} is-active{% endif %}" href="{% url 'collections:list' %}">{% icon "collections" %}<span>Collections</span></a>
+    <a class="drawer-link{% if nav == 'rooms' %} is-active{% endif %}" href="{% url 'rooms:list' %}">{% icon "rooms" %}<span>Rooms</span></a>
+    <a class="drawer-link{% if nav == 'annotations' %} is-active{% endif %}" href="{% url 'annotations:mine' %}">{% icon "highlight" %}<span>My Annotations</span></a>
+    <a class="drawer-link{% if nav == 'history' %} is-active{% endif %}" href="{% url 'reading:history' %}">{% icon "history" %}<span>Reading History</span></a>
+    <a class="drawer-link{% if nav == 'profile' %} is-active{% endif %}" href="{% url 'accounts:profile' %}">{% icon "settings" %}<span>Settings</span></a>
+  </div>
+</dialog>

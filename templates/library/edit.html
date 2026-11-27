@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static icons %}
+{% block title %}Edit {{ book.title }}{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1 class="page-title">Review metadata</h1>
+    <p class="page-sub mb-0">Pre-filled from the PDF. Check every field before saving.</p>
+  </div>
+</div>
+
+<form class="card" method="post" style="max-width:760px">
+  {% csrf_token %}
+  <div class="card-body">
+    {% if form.non_field_errors %}<div class="mb-3">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="grid-2">
+      {% for field in form %}
+        <div class="mb-3">
+          <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<p class="fg-3 mb-0">{{ field.help_text }}</p>{% endif %}
+          {% for error in field.errors %}<p class="fg-3 mb-0">{{ error }}</p>{% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+    <button class="btn-solid theme-primary" type="submit">{% icon "check" 16 %} Save book</button>
+  </div>
+</form>
+
+<section class="card mt-3" style="max-width:760px">
+  <header class="card-head"><div><h2 class="card-title">Cover</h2><p class="card-sub mb-0">Rendered from page 1, or upload your own.</p></div></header>
+  <div class="card-body">
+    <div id="cover-render" style="width:1px;height:1px;overflow:hidden" data-book="{{ book.pk }}" data-src="{% url 'reading:file' book.pk %}"></div>
+    <p class="fg-3" id="coverStatus">Rendering cover from page 1…</p>
+    <form method="post" action="{% url 'library:cover' book.pk %}" enctype="multipart/form-data" class="d-flex gap-2">
+      {% csrf_token %}
+      <input class="form-control" type="file" name="cover" accept="image/jpeg,image/png,image/webp">
+      <button class="btn-outline theme-secondary" type="submit">Upload cover</button>
+    </form>
+  </div>
+</section>
+
+<script type="module" src="{% static 'js/cover.js' %}"></script>
+{% endblock %}

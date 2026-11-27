@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load icons humanize %}
+{% block title %}Reading History{% endblock %}
+{% block content %}
+<div class="page-head"><div>
+  <h1 class="page-title">Reading History</h1>
+  <p class="page-sub mb-0">Where you left off in every book.</p>
+</div></div>
+
+<section class="card mb-3">
+  <header class="card-head"><div><h2 class="card-title">Progress</h2></div></header>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table lg:table-stacked">
+        <thead><tr><th>Book</th><th>Page</th><th>Progress</th><th>Last read</th></tr></thead>
+        <tbody>
+          {% for p in page_obj %}
+          <tr>
+            <td><a href="{% url 'reading:reader' p.book.pk %}">{{ p.book.title }}</a></td>
+            <td>{{ p.last_position }} / {{ p.book.pages|default:"?" }}</td>
+            <td>{{ p.percentage|floatformat:0 }}%</td>
+            <td>{{ p.last_read|naturaltime }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" class="fg-3">Nothing read yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <header class="card-head"><div><h2 class="card-title">Bookmarks</h2></div></header>
+  <div class="card-body">
+    <ul class="task-list">
+      {% for b in bookmarks %}
+      <li class="task">
+        <label>
+          <span class="task-text"><a href="{% url 'reading:reader' b.book.pk %}?page={{ b.page_number }}">{{ b.book.title }}</a></span>
+          <span class="task-when">p. {{ b.page_number }} · {{ b.created_at|naturaltime }}</span>
+        </label>
+      </li>
+      {% empty %}
+      <li class="task"><label><span class="task-text fg-3">No bookmarks.</span></label></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

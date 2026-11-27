@@ -1,0 +1,30 @@
+[project]
+name = "marginalia"
+version = "0.1.0"
+description = "PDF digital library with per-user annotations and collaborative reading (Django; local SQLite + Cloudflare D1/R2)"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.0,<6.1",
+    "pypdf>=5.0",
+    "argon2-cffi>=23.1",
+    "sqlparse>=0.5",
+]
+
+[project.optional-dependencies]
+# Cloudflare target only (Pyodide-compatible; see docs/PARITY.md).
+cloudflare = [
+    "django-cf>=0.2.17",
+    "workers-runtime-sdk>=1.6.0",
+]
+dev = [
+    "pytest>=8.0",
+    "playwright>=1.44",
+]
+
+[tool.setuptools]
+# The project is run from its root (manage.py) — no packaging needed.
+packages = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["e2e: two-browser Playwright smoke tests (local only)"]

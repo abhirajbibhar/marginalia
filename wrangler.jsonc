@@ -1,0 +1,38 @@
+# Marginalia — Cloudflare Worker configuration (Python Workers + D1 + R2).
+#
+# Build first:  uv run pywrangler build   (produces the Worker bundle in dist/)
+# Then:         npx wrangler deploy
+#
+# Secrets (set with `npx wrangler secret put <NAME>`; never committed):
+#   DJANGO_SECRET_KEY, ALLOWED_HOSTS, R2_ACCOUNT_ID, R2_ACCESS_KEY_ID,
+#   R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, TASKS_SECRET
+#
+# Static assets (Bootstrap 6, HTMX, EmbedPDF 2.15.1 bundle + pdfium.wasm) are
+# served by Workers static assets — 25 MiB/file and 100k files/version limits
+# are ample (Phase 0).
+
+name = "marginalia"
+main = "src/entry.py"
+compatibility_date = "2026-09-01"
+
+# Serve static/ directly; the Worker handles everything else (run_worker_first
+# keeps /api and /read on the Django path).
+[assets]
+directory = "./staticfiles"
+binding = "ASSETS"
+run_worker_first = ["/api/*", "/read/*", "/accounts/*", "/library/*", "/rooms/*", "/admin/*", "/manage/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "marginalia"
+database_id = "<your-d1-database-id>"
+migrations_dir = "migrations/d1"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "marginalia-media"
+
+# Periodic maintenance (compacts the change feed, purges rate-limit buckets)
+# by calling /manage/tasks/ with the TASKS_SECRET header.
+[triggers]
+crons = ["17 * * * *"]

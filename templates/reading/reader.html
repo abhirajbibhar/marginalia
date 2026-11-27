@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static icons %}
+{% block title %}{{ book.title }}{% endblock %}
+{% block body_class %}is-reader{% endblock %}
+{% block main_class %}page-reader{% endblock %}
+
+{% block content %}
+{# No separate header: the site topbar carries the reader controls (back,
+   title, layer switch, presence, bookmark, sync chip) and the viewer's own
+   header sits directly beneath it. #}
+<div id="pdf-viewer" class="pdf-mount"
+     data-book="{{ book.pk }}"
+     data-user="{{ user.pk }}"
+     data-src="{% url 'reading:file' book.pk %}"
+     data-title="{{ book.title|escape }}"
+     data-author-name="{{ user.profile.label|escape }}"
+     data-resume="{{ resume_page }}"
+     data-poll-active="{{ POLL_ACTIVE_MS }}"
+     data-poll-alone="{{ POLL_ALONE_MS }}"
+     data-poll-hidden="{{ POLL_HIDDEN_MS }}"
+     data-focus="{{ request.GET.focus|default:'' }}">
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script type="module" src="{% static 'js/reader.js' %}"></script>
+{% endblock %}

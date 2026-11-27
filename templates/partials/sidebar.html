@@ -1,0 +1,21 @@
+{% load icons %}
+{# Sidebar — structure and classes preserved from the Cadence template. #}
+<aside class="side" id="side">
+  <a class="side-brand" href="{% url 'dashboard:home' %}">
+    <span class="side-mark" aria-hidden="true">M</span><span>Marginalia</span>
+  </a>
+  <p class="side-label mb-0">Library</p>
+  <a class="side-link{% if nav == 'dashboard' %} is-active{% endif %}" href="{% url 'dashboard:home' %}"{% if nav == 'dashboard' %} aria-current="page"{% endif %}>{% icon "dashboard" %}<span>Dashboard</span></a>
+  <a class="side-link{% if nav == 'library' %} is-active{% endif %}" href="{% url 'library:browse' %}"{% if nav == 'library' %} aria-current="page"{% endif %}>{% icon "book" %}<span>Library</span></a>
+  <a class="side-link{% if nav == 'authors' %} is-active{% endif %}" href="{% url 'authors:list' %}"{% if nav == 'authors' %} aria-current="page"{% endif %}>{% icon "authors" %}<span>Authors</span></a>
+  <a class="side-link{% if nav == 'series' %} is-active{% endif %}" href="{% url 'series:list' %}"{% if nav == 'series' %} aria-current="page"{% endif %}>{% icon "series" %}<span>Series</span></a>
+  <a class="side-link{% if nav == 'collections' %} is-active{% endif %}" href="{% url 'collections:list' %}"{% if nav == 'collections' %} aria-current="page"{% endif %}>{% icon "collections" %}<span>Collections</span></a>
+  <p class="side-label mb-0">Reading</p>
+  <a class="side-link{% if nav == 'rooms' %} is-active{% endif %}" href="{% url 'rooms:list' %}"{% if nav == 'rooms' %} aria-current="page"{% endif %}>{% icon "rooms" %}<span>Rooms</span></a>
+  <a class="side-link{% if nav == 'annotations' %} is-active{% endif %}" href="{% url 'annotations:mine' %}"{% if nav == 'annotations' %} aria-current="page"{% endif %}>{% icon "highlight" %}<span>My Annotations</span></a>
+  <a class="side-link{% if nav == 'history' %} is-active{% endif %}" href="{% url 'reading:history' %}"{% if nav == 'history' %} aria-current="page"{% endif %}>{% icon "history" %}<span>Reading History</span></a>
+  <div class="side-foot">
+    <span class="avatar avatar-sm"><span class="avatar-initials">{{ user.profile.label|slice:":2"|upper }}</span></span>
+    <span class="side-who"><strong>{{ user.profile.label }}</strong><small>{{ user.profile.get_role_display }}</small></span>
+  </div>
+</aside>

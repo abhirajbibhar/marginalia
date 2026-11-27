@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ series.name }}{% endblock %}
+{% block content %}
+<div class="page-head"><div>
+  <h1 class="page-title">{{ series.name }}</h1>
+  <p class="page-sub mb-0">{{ books|length }} books in order</p>
+</div></div>
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+  {% for book in books %}{% include "library/_book_card.html" %}{% empty %}
+  <div class="col-12"><p class="fg-3">No books in this series yet.</p></div>{% endfor %}
+</div>
+{% endblock %}

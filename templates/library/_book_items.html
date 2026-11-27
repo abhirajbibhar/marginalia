@@ -1,0 +1,40 @@
+{# HTMX-appendable page of results: grid columns (or list rows) + the
+   Load-more control. The control swaps ITSELF (closest .book-more, outerHTML)
+   with this same fragment shape, so pages append cleanly with no duplicate
+   ids or stacked buttons. #}
+{% if view == "list" %}
+  <div class="col-12">
+    <div class="table-responsive">
+      <table class="table lg:table-stacked">
+        <thead><tr><th>Title</th><th>Authors</th><th>Series</th><th>Pages</th></tr></thead>
+        <tbody>
+          {% for book in page_obj %}
+          <tr>
+            <td><a href="{% url 'library:detail' book.pk %}">{{ book.title }}</a></td>
+            <td>{% for a in book.authors.all|slice:":3" %}{{ a.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+            <td>{{ book.series.name|default:"" }}</td>
+            <td>{{ book.pages }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="4" class="fg-3">No books match.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% else %}
+  {% for book in page_obj %}
+    {% include "library/_book_card.html" %}
+  {% empty %}
+    <div class="col-12"><p class="fg-3">No books match.</p></div>
+  {% endfor %}
+{% endif %}
+
+{% if page_obj.has_next %}
+<div class="col-12 text-center book-more">
+  <button class="btn-outline theme-secondary"
+          hx-get="{% url 'library:browse' %}?page={{ page_obj.next_page_number }}&{{ filters.urlencode }}{% if view == 'list' %}&view=list{% endif %}"
+          hx-target="closest .book-more"
+          hx-swap="outerHTML">Load more</button>
+</div>
+{% endif %}

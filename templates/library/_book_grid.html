@@ -1,0 +1,5 @@
+{# Results region: Bootstrap "grid cards" row (docs/6.0/components/card).
+   HTMX loads more by swapping the .book-more control with more items. #}
+<div id="book-results" class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3" data-view="{{ view }}">
+  {% include "library/_book_items.html" %}
+</div>

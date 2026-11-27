@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load icons %}
+{% block title %}Collections{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div><h1 class="page-title">Collections</h1><p class="page-sub mb-0">Your shelves and shared picks.</p></div>
+  <div class="page-actions"><a class="btn-solid theme-primary" href="{% url 'collections:create' %}">{% icon "plus" 16 %} New collection</a></div>
+</div>
+<div class="grid-2">
+  {% for collection in collections %}
+  <section class="card">
+    <header class="card-head">
+      <div><h2 class="card-title"><a href="{% url 'collections:detail' collection.pk %}">{{ collection.name }}</a></h2>
+      <p class="card-sub mb-0">{{ collection.get_visibility_display }} · {{ collection.books.count }} books</p></div>
+    </header>
+    <div class="card-body"><p class="mb-0">{{ collection.description|truncatechars:200 }}</p></div>
+  </section>
+  {% empty %}
+  <p class="fg-3">No collections yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

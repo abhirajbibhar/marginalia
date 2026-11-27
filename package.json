@@ -1,0 +1,18 @@
+{
+  "name": "marginalia-assets",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Front-end toolchain for Marginalia. All runtime assets are vendored; this manifest pins the EmbedPDF version for audits.",
+  "dependencies": {
+    "@embedpdf/snippet": "2.15.1",
+    "htmx.org": "2.0.7"
+  },
+  "devDependencies": {
+    "wrangler": "^4.168.0"
+  },
+  "scripts": {
+    "vendor": "bash scripts/vendor_assets.sh",
+    "dev": "npx wrangler dev",
+    "deploy": "npx wrangler deploy"
+  }
+}

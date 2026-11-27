@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load icons humanize %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-sub mb-0">Your library at a glance.</p>
+  </div>
+  <div class="page-actions">
+    {% if user.profile.is_librarian %}
+      <a class="btn-solid theme-primary" href="{% url 'library:upload' %}">{% icon "plus" 16 %} Upload book</a>
+    {% endif %}
+  </div>
+</div>
+
+<div class="kpi-row">
+  <article class="kpi">
+    <p class="kpi-label mb-1">Books</p>
+    <p class="kpi-figure mb-1">{{ stats.books }}</p>
+    <p class="kpi-delta mb-0 fg-3">in the library</p>
+  </article>
+  <article class="kpi">
+    <p class="kpi-label mb-1">Authors</p>
+    <p class="kpi-figure mb-1">{{ stats.authors }}</p>
+    <p class="kpi-delta mb-0 fg-3">across the catalogue</p>
+  </article>
+  <article class="kpi">
+    <p class="kpi-label mb-1">Active rooms</p>
+    <p class="kpi-figure mb-1">{{ stats.rooms }}</p>
+    <p class="kpi-delta mb-0 fg-3">shared readings</p>
+  </article>
+  <article class="kpi">
+    <p class="kpi-label mb-1">My annotations</p>
+    <p class="kpi-figure mb-1">{{ stats.annotations }}</p>
+    <p class="kpi-delta mb-0 fg-3">private + room notes</p>
+  </article>
+</div>
+
+<div class="grid-2">
+  <section class="card">
+    <header class="card-head">
+      <div><h2 class="card-title">Recent activity</h2><p class="card-sub mb-0">Room annotations and your notes</p></div>
+      <a class="btn-text theme-secondary btn-sm" href="{% url 'annotations:mine' %}">My annotations</a>
+    </header>
+    <div class="card-body">
+      <ul class="act-list">
+        {% for change in recent_changes %}
+        <li class="act">
+          <span class="act-icon act-note" aria-hidden="true">{% icon "highlight" 14 %}</span>
+          <div>
+            <p class="act-head mb-1"><strong>{{ change.actor.profile.label|default:"Someone" }}</strong> <span class="fg-3">· {{ change.book.title|truncatechars:40 }}</span></p>
+            <p class="act-text mb-1">{{ change.get_op_display }} on page {{ change.annotation.page_index|add:1 }}</p>
+            <p class="act-when mb-0">{{ change.created_at|naturaltime }}</p>
+          </div>
+        </li>
+        {% empty %}
+        <li class="act"><div><p class="act-text mb-0 fg-3">No room activity yet. Start a shared reading from any book.</p></div></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  <section class="card">
+    <header class="card-head">
+      <div><h2 class="card-title">Continue reading</h2><p class="card-sub mb-0">{{ continue_reading|length }} in progress</p></div>
+    </header>
+    <div class="card-body">
+      <ul class="task-list">
+        {% for progress in continue_reading %}
+        <li class="task">
+          <input type="checkbox" class="check" id="c{{ progress.pk }}" disabled>
+          <label for="c{{ progress.pk }}">
+            <span class="task-text"><a href="{% url 'reading:reader' progress.book.pk %}">{{ progress.book.title }}</a></span>
+            <span class="task-when">p. {{ progress.last_position }} · {{ progress.percentage|floatformat:0 }}%</span>
+          </label>
+        </li>
+        {% empty %}
+        <li class="task"><label><span class="task-text fg-3">Nothing in progress — open a book from the library.</span></label></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+</div>
+
+{% if rooms %}
+<section class="card">
+  <header class="card-head">
+    <div><h2 class="card-title">Your reading rooms</h2><p class="card-sub mb-0">Shared annotation layers</p></div>
+    <a class="btn-text theme-secondary btn-sm" href="{% url 'rooms:list' %}">All rooms</a>
+  </header>
+  <div class="card-body">
+    <ul class="act-list">
+      {% for room in rooms %}
+      <li class="act">
+        <span class="act-icon act-meeting" aria-hidden="true">{% icon "rooms" 14 %}</span>
+        <div>
+          <p class="act-head mb-1"><strong>{{ room.name }}</strong> <span class="fg-3">· {{ room.book.title|truncatechars:40 }}</span></p>
+          <p class="act-text mb-1">Owner: {{ room.owner.profile.label }}</p>
+          <p class="act-when mb-0"><a href="{% url 'rooms:detail' room.pk %}">Open room</a></p>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
